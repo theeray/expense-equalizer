@@ -1,4 +1,4 @@
-const STORAGE_KEY='eee-pwa-v5';
+const STORAGE_KEY='eee-pwa-v6';
 const blankTrip={id:'trip-initial',name:'My Trip',createdAt:Date.now(),people:[],expenses:[]};
 let state=loadState()||{currentTripId:'trip-initial',trips:[structuredClone(blankTrip)]};
 let editExpenseId=null,editPersonId=null,draftMode='weighted',selected=new Set(),deferredInstall=null;
@@ -97,6 +97,33 @@ document.getElementById('openExpenseBtn').onclick=()=>openExpenseModal();documen
 document.getElementById('newTrip').onclick=openTripModal;document.getElementById('renameTrip').onclick=renameCurrentTrip;document.getElementById('deleteTrip').onclick=deleteCurrentTrip;document.getElementById('cancelTrip').onclick=closeTripModal;document.getElementById('saveTrip').onclick=saveTrip;document.getElementById('shareResults').onclick=shareResults;
 ['expenseModal','personModal','tripModal'].forEach(id=>document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id)e.target.classList.add('hidden')}));
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;document.getElementById('installBtn').classList.remove('hidden')});document.getElementById('installBtn').onclick=async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;document.getElementById('installBtn').classList.add('hidden')};
-document.getElementById('startApp').onclick=hideSplash;document.getElementById('showSplash').onclick=showSplash;
+{
+  const splash = document.getElementById('splash');
+  const startButton = document.getElementById('startApp');
+  const showSplashButton = document.getElementById('showSplash');
+
+  const start = (event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    hideSplash();
+  };
+
+  if (startButton) {
+    startButton.addEventListener('click', start);
+    startButton.addEventListener('touchend', start, {passive:false});
+  }
+
+  if (splash) {
+    splash.addEventListener('click', start);
+    splash.addEventListener('touchend', start, {passive:false});
+    splash.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') start(event);
+    });
+  }
+
+  if (showSplashButton) showSplashButton.addEventListener('click', showSplash);
+}
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
 render();

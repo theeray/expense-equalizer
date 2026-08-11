@@ -1,29 +1,23 @@
-# Eric's Expense Equalizer — Phase 1 v1.5
+# Eric's Expense Equalizer — Phase 1 v1.6
 
 **Share. Split. Simple.**
 
-This complete GitHub Pages build uses the two user-supplied image files directly.
+## v1.6 fixes
 
-## v1.5 visual fixes
+- The entire welcome/start screen is now tappable/clickable, not just the visible green button area.
+- Touch, click, keyboard Enter, and keyboard Space all start the app.
+- The original uploaded start-page JPG is copied into the project without JPEG recompression.
+- A 3× PNG display asset is included for high-density/Retina screens, with only a light sharpening pass.
+- No dark fade, CSS overlay, or vector scenery is added over the supplied artwork.
+- The clean supplied Eric icon remains in the working-app header and PWA icons.
+- New service-worker cache: v1.6.0.
 
-- Uses the newly centered `Eric's Expense Equalizer Start Page` artwork directly.
-- Removes all CSS/SVG darkening, fade, shade, and vector overlays from the splash.
-- Uses the newly supplied black-background Eric icon directly.
-- Rounded corners are applied by CSS in the working app header, so the source icon itself
-  stays clean and has no white corner artifacts.
-- Rebuilds the PWA/home-screen icons from the same supplied icon.
-- Keeps the darker forest-green UI.
-- Keeps the app blank by default: no sample people and no sample expenses.
-- Uses a new service-worker cache version to force the updated visual assets.
+## GitHub upload
 
-## Upload to GitHub
-
-Replace the existing repository files with every file inside this folder.
-Upload the files themselves to the ROOT of the repository; do not upload the ZIP as the site.
+Replace the files in your repository root with every file from this folder.
 
 GitHub Pages:
 Settings → Pages → Deploy from a branch → main → /(root)
 
-After publishing, test in an Incognito/InPrivate window. If you have an older version
-installed on a phone home screen, remove it and reinstall after v1.5 is live because
-PWA icons and app shells are cached aggressively.
+After publishing, test in an Incognito/InPrivate window. If an older home-screen PWA is installed,
+remove it and add the new version again after v1.6 is live.

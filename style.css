@@ -423,3 +423,70 @@ html,body{background:#050d09}
     transform:translateX(-50%) !important;
   }
 }
+
+
+/* ============================================================
+   v1.6 — whole-screen start interaction + sharper splash
+   ============================================================ */
+
+.splash.splash-photo{
+  cursor:pointer !important;
+  touch-action:manipulation !important;
+  -webkit-user-select:none !important;
+  user-select:none !important;
+}
+
+.splash-picture,
+.splash-photo-img{
+  pointer-events:none !important;
+}
+
+.splash-photo-img{
+  filter:none !important;
+  opacity:1 !important;
+  image-rendering:auto !important;
+  backface-visibility:hidden !important;
+  transform:translateZ(0) !important;
+}
+
+/* Make the actual button cover the entire screen.
+   It is transparent because the supplied artwork already contains the visible button. */
+.splash-fullscreen-button{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:10 !important;
+  width:100% !important;
+  height:100% !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  color:transparent !important;
+  font-size:0 !important;
+  box-shadow:none !important;
+  cursor:pointer !important;
+  touch-action:manipulation !important;
+  -webkit-tap-highlight-color:transparent !important;
+}
+
+.splash-fullscreen-button:focus-visible{
+  outline:3px solid rgba(151,194,87,.95) !important;
+  outline-offset:-7px !important;
+}
+
+/* Disable the older localized hit target if any cached class styles remain. */
+.splash-hit-button{
+  display:none !important;
+}
+
+/* Keep exact supplied composition with no darkening or added overlay. */
+.splash.splash-photo::before,
+.splash.splash-photo::after,
+.splash-shade,
+.splash-scenery{
+  display:none !important;
+  content:none !important;
+  opacity:0 !important;
+  background:none !important;
+}

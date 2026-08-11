@@ -27,3 +27,9 @@ If replacing an older version, upload/replace all files in this package. Your br
 ## Privacy
 
 All trip data is stored in the browser on the current device. There is no account, server, analytics service, or shared database in Phase 1.
+
+
+## Version 1.2 upload note
+This package intentionally keeps all web assets at the repository root. Upload every file in this folder to the root of your GitHub repository. There are no `icons` or `assets` folders to miss.
+
+After uploading, GitHub Pages may still show the previous PWA briefly because of browser/service-worker caching. Test in a private window first. If an installed home-screen copy is stale, remove it and add it again after the site updates.

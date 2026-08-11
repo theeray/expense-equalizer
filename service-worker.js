@@ -1,23 +1,22 @@
-const CACHE='erics-expense-equalizer-v1.6.0';
+const CACHE='erics-expense-equalizer-v1.9.0';
 const CORE=[
   './',
-  './index.html',
-  './style.css?v=16',
-  './app.js?v=16',
-  './manifest.webmanifest?v=16',
-  './splash-art-original.jpg?v=16',
-  './splash-art-hidpi.png?v=16',
-  './brand-icon.jpg?v=16',
-  './icon-192.png?v=16',
-  './icon-512.png?v=16',
-  './apple-touch-icon.png?v=16',
-  './favicon.png?v=16'
+  './index.html?v=19',
+  './app.html?v=19',
+  './style.css?v=19',
+  './app.js?v=19',
+  './manifest.webmanifest?v=19',
+  './splash-art-original.jpg?v=19',
+  './splash-art-hidpi.png?v=19',
+  './brand-icon.jpg?v=19',
+  './icon-192.png?v=19',
+  './icon-512.png?v=19',
+  './apple-touch-icon.png?v=19',
+  './favicon.png?v=19'
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting())
-  );
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', event => {
@@ -29,12 +28,12 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
+  if(event.request.method!=='GET') return;
   event.respondWith(
     fetch(event.request).then(response => {
-      const copy=response.clone();
-      caches.open(CACHE).then(cache=>cache.put(event.request,copy));
+      const clone=response.clone();
+      caches.open(CACHE).then(cache=>cache.put(event.request,clone));
       return response;
-    }).catch(()=>caches.match(event.request).then(hit=>hit || caches.match('./index.html')))
+    }).catch(() => caches.match(event.request).then(hit => hit || caches.match('./index.html?v=19')))
   );
 });

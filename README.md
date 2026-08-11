@@ -1,23 +1,29 @@
-# Eric's Expense Equalizer — Phase 1 v1.6
+# Eric's Expense Equalizer — Phase 1 v1.9
 
 **Share. Split. Simple.**
 
-## v1.6 fixes
+## Start-screen architecture changed completely
 
-- The entire welcome/start screen is now tappable/clickable, not just the visible green button area.
-- Touch, click, keyboard Enter, and keyboard Space all start the app.
-- The original uploaded start-page JPG is copied into the project without JPEG recompression.
-- A 3× PNG display asset is included for high-density/Retina screens, with only a light sharpening pass.
-- No dark fade, CSS overlay, or vector scenery is added over the supplied artwork.
-- The clean supplied Eric icon remains in the working-app header and PWA icons.
-- New service-worker cache: v1.6.0.
+v1.9 uses two separate HTML pages:
 
-## GitHub upload
+- `index.html` = welcome/start artwork only.
+- `app.html` = the actual expense-splitting application.
 
-Replace the files in your repository root with every file from this folder.
+The entire start screen is a normal HTML link directly to `app.html`.
+There is no JavaScript hide/show action, no CSS `:target`, and no splash overlay
+inside the app page.
+
+This is deliberately simple and robust: if a browser can follow a normal web link,
+the Get Started screen can open the app.
+
+The approved splash image and clean Eric icon are unchanged.
+
+## Upload
+
+Replace the repository-root files with every file in this folder. Note that v1.9 adds
+one new required file: `app.html`.
 
 GitHub Pages:
 Settings → Pages → Deploy from a branch → main → /(root)
 
-After publishing, test in an Incognito/InPrivate window. If an older home-screen PWA is installed,
-remove it and add the new version again after v1.6 is live.
+Test the live site in an Incognito/InPrivate window first.

@@ -490,3 +490,124 @@ html,body{background:#050d09}
   opacity:0 !important;
   background:none !important;
 }
+
+
+/* ============================================================
+   v1.7 — START SCREEN VISIBILITY FIX
+   v1.6's .splash.splash-photo { display:block !important; }
+   was more specific than .hidden { display:none !important; }.
+   This explicit rule guarantees that starting the app actually
+   removes the splash from view.
+   ============================================================ */
+
+.splash.splash-photo.hidden,
+#splash.hidden{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+/* Keep the approved start artwork untouched while visible. */
+#splash:not(.hidden){
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+
+
+/* ============================================================
+   v1.8 — NATIVE HTML/CSS START TRANSITION
+   The app no longer depends on JavaScript to leave the splash.
+   ============================================================ */
+
+.start-anchor{
+  position:fixed;
+  width:0;
+  height:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+/* Before start, app content is hidden. */
+#appShell{
+  display:none !important;
+}
+
+/* Native link changes URL fragment to #started.
+   These sibling rules then hide the splash and show the app. */
+#started:target ~ #splash{
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+#started:target ~ #appShell{
+  display:block !important;
+}
+
+/* Entire start screen is one real browser link. */
+.splash-fullscreen-link{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:20 !important;
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  overflow:hidden !important;
+  text-indent:-9999px !important;
+  color:transparent !important;
+  background:transparent !important;
+  border:0 !important;
+  cursor:pointer !important;
+  touch-action:manipulation !important;
+  -webkit-tap-highlight-color:transparent !important;
+}
+
+/* Retire the previous JS-only button class entirely. */
+.splash-fullscreen-button,
+.splash-hit-button{
+  display:none !important;
+}
+
+/* Keep approved artwork fully visible and unmodified. */
+.splash-picture,
+.splash-photo-img{
+  pointer-events:none !important;
+}
+
+.splash-photo-img{
+  filter:none !important;
+  opacity:1 !important;
+  mix-blend-mode:normal !important;
+  image-rendering:auto !important;
+}
+
+/* Backstop: if JS adds .hidden, it still works. */
+#splash.hidden,
+.splash.splash-photo.hidden{
+  display:none !important;
+}
+
+#appShell.app-hidden{
+  display:none !important;
+}
+
+
+/* ============================================================
+   v1.9 — app is now a separate page (app.html)
+   ============================================================ */
+
+/* app.html contains no splash screen. Always show the working app. */
+body .app-page-shell,
+#appShell.app-page-shell{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+
+/* Old splash/target rules are inert on app.html, but these ensure they cannot hide the app. */
+#appShell{
+  display:block !important;
+}

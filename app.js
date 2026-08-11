@@ -19,8 +19,24 @@ function peopleIcon(count=1){
   }
   return `<span class="avatar-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="9" r="6"/><path d="M5 28c.7-8.5 4.4-12.7 11-12.7S26.3 19.5 27 28H5Z"/></svg></span>`;
 }
-function hideSplash(){document.getElementById('splash').classList.add('hidden');document.getElementById('appShell').classList.remove('app-hidden');window.scrollTo(0,0)}
-function showSplash(){document.getElementById('appShell').classList.add('app-hidden');document.getElementById('splash').classList.remove('hidden');window.scrollTo(0,0)}
+function hideSplash(){
+  const splash=document.getElementById('splash');
+  const app=document.getElementById('appShell');
+  if(splash){
+    splash.classList.add('hidden');
+    splash.setAttribute('hidden','');
+    splash.setAttribute('aria-hidden','true');
+    splash.style.display='none';
+  }
+  if(app){
+    app.classList.remove('app-hidden');
+    app.removeAttribute('hidden');
+  }
+  window.scrollTo(0,0);
+}
+function showSplash(){
+  window.location.href='./index.html?v=19';
+}
 
 function shares(exp,t=currentTrip()){
   const ids=exp.selected.filter(id=>t.people.some(p=>p.id===id)); if(!ids.length)return {};
@@ -97,33 +113,9 @@ document.getElementById('openExpenseBtn').onclick=()=>openExpenseModal();documen
 document.getElementById('newTrip').onclick=openTripModal;document.getElementById('renameTrip').onclick=renameCurrentTrip;document.getElementById('deleteTrip').onclick=deleteCurrentTrip;document.getElementById('cancelTrip').onclick=closeTripModal;document.getElementById('saveTrip').onclick=saveTrip;document.getElementById('shareResults').onclick=shareResults;
 ['expenseModal','personModal','tripModal'].forEach(id=>document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id)e.target.classList.add('hidden')}));
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;document.getElementById('installBtn').classList.remove('hidden')});document.getElementById('installBtn').onclick=async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;document.getElementById('installBtn').classList.add('hidden')};
-{
-  const splash = document.getElementById('splash');
-  const startButton = document.getElementById('startApp');
-  const showSplashButton = document.getElementById('showSplash');
 
-  const start = (event) => {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    hideSplash();
-  };
+const welcomeButton=document.getElementById('showSplash');
+if(welcomeButton) welcomeButton.onclick=()=>{window.location.href='./index.html?v=19';};
 
-  if (startButton) {
-    startButton.addEventListener('click', start);
-    startButton.addEventListener('touchend', start, {passive:false});
-  }
-
-  if (splash) {
-    splash.addEventListener('click', start);
-    splash.addEventListener('touchend', start, {passive:false});
-    splash.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') start(event);
-    });
-  }
-
-  if (showSplashButton) showSplashButton.addEventListener('click', showSplash);
-}
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
 render();

@@ -1,39 +1,14 @@
-const CACHE='erics-expense-equalizer-v1.9.0';
+const CACHE='erics-expense-equalizer-v2.2.0';
 const CORE=[
-  './',
-  './index.html?v=19',
-  './app.html?v=19',
-  './style.css?v=19',
-  './app.js?v=19',
-  './manifest.webmanifest?v=19',
-  './splash-art-original.jpg?v=19',
-  './splash-art-hidpi.png?v=19',
-  './brand-icon.jpg?v=19',
-  './icon-192.png?v=19',
-  './icon-512.png?v=19',
-  './apple-touch-icon.png?v=19',
-  './favicon.png?v=19'
+'./','./index.html?v=22','./app.html?v=22','./style.css?v=22','./app.js?v=22',
+'./manifest.webmanifest?v=22','./splash-art-original.jpg?v=22','./splash-art-hidpi.png?v=22',
+'./brand-icon.jpg?v=22','./icon-192.png?v=22','./icon-512.png?v=22',
+'./apple-touch-icon.png?v=22','./favicon.png?v=22'
 ];
-
-self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
-      .then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener('fetch', event => {
-  if(event.request.method!=='GET') return;
-  event.respondWith(
-    fetch(event.request).then(response => {
-      const clone=response.clone();
-      caches.open(CACHE).then(cache=>cache.put(event.request,clone));
-      return response;
-    }).catch(() => caches.match(event.request).then(hit => hit || caches.match('./index.html?v=19')))
-  );
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',e=>{
+if(e.request.method!=='GET')return;
+e.respondWith(fetch(e.request).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return r;})
+.catch(()=>caches.match(e.request).then(hit=>hit||caches.match('./index.html?v=22'))));
 });

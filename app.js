@@ -1,5 +1,5 @@
 const STORAGE_KEY='eee-pwa-v6';
-const blankTrip={id:'trip-initial',name:'My Trip',createdAt:Date.now(),people:[],expenses:[]};
+const blankTrip={id:'trip-initial',name:'New Expense Group',createdAt:Date.now(),people:[],expenses:[]};
 let state=loadState()||{currentTripId:'trip-initial',trips:[structuredClone(blankTrip)]};
 let editExpenseId=null,editPersonId=null,draftMode='weighted',selected=new Set(),deferredInstall=null;
 
@@ -19,24 +19,7 @@ function peopleIcon(count=1){
   }
   return `<span class="avatar-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="9" r="6"/><path d="M5 28c.7-8.5 4.4-12.7 11-12.7S26.3 19.5 27 28H5Z"/></svg></span>`;
 }
-function hideSplash(){
-  const splash=document.getElementById('splash');
-  const app=document.getElementById('appShell');
-  if(splash){
-    splash.classList.add('hidden');
-    splash.setAttribute('hidden','');
-    splash.setAttribute('aria-hidden','true');
-    splash.style.display='none';
-  }
-  if(app){
-    app.classList.remove('app-hidden');
-    app.removeAttribute('hidden');
-  }
-  window.scrollTo(0,0);
-}
-function showSplash(){
-  window.location.href='./index.html?v=19';
-}
+function showSplash(){window.location.href='./index.html?v=22';}
 
 function shares(exp,t=currentTrip()){
   const ids=exp.selected.filter(id=>t.people.some(p=>p.id===id)); if(!ids.length)return {};
@@ -63,24 +46,20 @@ function transfers(t=currentTrip()){
 
 function render(){const t=currentTrip();if(!t)return;
   document.getElementById('tripName').textContent=t.name;document.getElementById('tripTotal').textContent=money(tripTotal(t));
-  renderPeople();renderExpenses
-
-Tap + to record your first shared expense.();renderSettle();renderTrips();renderExpenseControls();
+  renderPeople();renderExpenses();renderSettle();renderTrips();renderExpenseControls();
 }
 function renderPeople(){const t=currentTrip(),el=document.getElementById('peopleList');
-  if(!t.people.length){el.innerHTML='<div class="empty-card">No people yet.</div>';return}
+  if(!t.people.length){el.innerHTML='<div class="empty-card"><strong>No people added yet.</strong><br><span class="empty-help">Tap + or Add person or group to begin.</span></div>';return}
   el.innerHTML=t.people.map(p=>`<button class="person-card" data-person="${p.id}"><div class="person-main">${peopleIcon(p.people)}<div><div class="card-title">${esc(p.name||'Unnamed')}</div><div class="card-sub">${p.people} ${p.people===1?'person':'people'}</div></div></div><span class="chev">›</span></button>`).join('');
   el.querySelectorAll('[data-person]').forEach(b=>b.onclick=()=>openPersonModal(b.dataset.person));
 }
-function renderExpenses
-
-Tap + to record your first shared expense.(){const t=currentTrip(),list=document.getElementById('expenseList'),total=tripTotal(t);document.getElementById('expenseTotal').textContent=money(total);document.getElementById('expenseCount').textContent=t.expenses.length;
-  if(!t.expenses.length){list.innerHTML='<div class="empty-card">No expenses yet. Add the first one when someone pays for something.</div>';return}
+function renderExpenses(){const t=currentTrip(),list=document.getElementById('expenseList'),total=tripTotal(t);document.getElementById('expenseTotal').textContent=money(total);document.getElementById('expenseCount').textContent=t.expenses.length;
+  if(!t.expenses.length){list.innerHTML='<div class="empty-card"><strong>No expenses yet.</strong><br><span class="empty-help">Add your first shared expense when you are ready.</span></div>';return}
   list.innerHTML=t.expenses.slice().reverse().map(e=>{const chosen=e.selected.map(personName).filter(Boolean),mode=e.mode==='weighted'?'By people':e.mode==='equal'?'Equal groups':'Custom';return `<button class="expense-card" data-expense="${e.id}"><div class="expense-top"><div><div class="card-title">${esc(e.description||'Expense')}</div><div class="expense-meta">Paid by ${esc(personName(e.payerId))} · ${mode}</div></div><div class="expense-amount">${money(e.amount)}</div></div><div class="pill-row">${chosen.map(n=>`<span class="pill">${esc(n)}</span>`).join('')}</div></button>`}).join('');
   list.querySelectorAll('[data-expense]').forEach(b=>b.onclick=()=>openExpenseModal(b.dataset.expense));
 }
 function renderSettle(){const t=currentTrip(),tr=transfers(t),b=balances(t);document.getElementById('settleTotal').textContent=money(tripTotal(t));document.getElementById('settleCount').textContent=`${tr.length} ${tr.length===1?'payment':'payments'} to settle`;
-  const te=document.getElementById('transfers');te.innerHTML=tr.length?tr.map(x=>`<div class="transfer-card"><div class="transfer-route"><strong>${esc(personName(x.from))}</strong><small>pays ${esc(personName(x.to))}</small></div><div class="transfer-amount">${money(x.amount)}</div></div>`).join(''):'<div class="empty-card">Everyone is already settled.</div>';
+  const te=document.getElementById('transfers');te.innerHTML=tr.length?tr.map(x=>`<div class="transfer-card"><div class="transfer-route"><strong>${esc(personName(x.from))}</strong><small>pays ${esc(personName(x.to))}</small></div><div class="transfer-amount">${money(x.amount)}</div></div>`).join(''):'<div class="empty-card"><strong>Nothing to settle yet.</strong><br><span class="empty-help">Add people and expenses to see who owes whom.</span></div>';
   document.getElementById('balances').innerHTML=t.people.map(p=>{const v=b[p.id]||0,cls=v>=-.005?'balance-pos':'balance-neg';return `<div class="balance-card"><div><div class="card-title">${esc(p.name)}</div><div class="card-sub">${v>=-.005?'is owed / even':'owes'}</div></div><div class="${cls}">${v>=0?'+':''}${money(v)}</div></div>`}).join('');
 }
 function renderTrips(){const el=document.getElementById('tripList');el.innerHTML=state.trips.map(t=>`<button class="trip-card" data-trip="${t.id}"><div class="trip-main"><div class="avatar">${t.id===state.currentTripId?'✓':'$'}</div><div><div class="card-title">${esc(t.name)}</div><div class="card-sub">${t.expenses.length} expenses · ${money(tripTotal(t))}</div></div></div><span class="chev">›</span></button>`).join('');el.querySelectorAll('[data-trip]').forEach(b=>b.onclick=()=>{state.currentTripId=b.dataset.trip;saveState();render();switchTab('people');toast('Trip opened')})}
@@ -95,7 +74,7 @@ function saveExpense(){const t=currentTrip(),description=document.getElementById
   const obj={id:editExpenseId||uid('e'),description,amount,payerId,mode:draftMode,selected:[...selected],weights};if(editExpenseId)t.expenses=t.expenses.map(x=>x.id===editExpenseId?obj:x);else t.expenses.push(obj);saveState();closeExpenseModal();render();toast(editExpenseId?'Expense updated':'Expense added')}
 function deleteExpense(){if(!editExpenseId)return;currentTrip().expenses=currentTrip().expenses.filter(e=>e.id!==editExpenseId);saveState();closeExpenseModal();render();toast('Expense deleted')}
 
-function openPersonModal(id=null){const p=id?currentTrip().people.find(x=>x.id===id):null;editPersonId=id;document.getElementById('personModalTitle').textContent=p?'Edit Person or Group':'Add Person or Group or Group';document.getElementById('personName').value=p?.name||'';document.getElementById('personWeight').value=p?.people??1;document.getElementById('deletePerson').classList.toggle('hidden',!p);document.getElementById('personModal').classList.remove('hidden');setTimeout(()=>document.getElementById('personName').focus(),80)}
+function openPersonModal(id=null){const p=id?currentTrip().people.find(x=>x.id===id):null;editPersonId=id;document.getElementById('personModalTitle').textContent=p?'Edit Person or Group':'Add Person or Group';document.getElementById('personName').value=p?.name||'';document.getElementById('personWeight').value=p?.people??1;document.getElementById('deletePerson').classList.toggle('hidden',!p);document.getElementById('personModal').classList.remove('hidden');setTimeout(()=>document.getElementById('personName').focus(),80)}
 function closePersonModal(){document.getElementById('personModal').classList.add('hidden')}
 function savePerson(){const t=currentTrip(),name=document.getElementById('personName').value.trim(),people=Math.max(.01,Number(document.getElementById('personWeight').value)||1);if(!name)return toast('Add a name');if(editPersonId)t.people=t.people.map(p=>p.id===editPersonId?{...p,name,people}:p);else t.people.push({id:uid('p'),name,people});saveState();closePersonModal();render();toast(editPersonId?'Updated':'Person added')}
 function deletePerson(){const t=currentTrip();if(!editPersonId)return;if(t.expenses.some(e=>e.payerId===editPersonId||e.selected.includes(editPersonId)))return toast('Remove their expenses first');t.people=t.people.filter(p=>p.id!==editPersonId);saveState();closePersonModal();render();toast('Removed')}
@@ -107,19 +86,19 @@ function renameCurrentTrip(){const t=currentTrip();const name=prompt('Rename tri
 function deleteCurrentTrip(){if(state.trips.length<=1)return toast('Keep at least one trip');const t=currentTrip();if(!confirm(`Delete \"${t.name}\" and all of its expenses?`))return;state.trips=state.trips.filter(x=>x.id!==t.id);state.currentTripId=state.trips[0].id;saveState();render();switchTab('people');toast('Trip deleted')}
 
 function switchTab(id){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));window.scrollTo({top:0,behavior:'smooth'})}
-async function shareSettlement Results(){const t=currentTrip(),tr=transfers(t);let text=`${t.name} — Eric's Expense Equalizer\nShare. Split. Simple.\n\nTotal: ${money(tripTotal(t))}\n\n`;text+=tr.length?tr.map(x=>`${personName(x.from)} pays ${personName(x.to)} ${money(x.amount)}`).join('\n'):'Everyone is already settled.';try{if(navigator.share)await navigator.share({title:`${t.name} settlement`,text});else{await navigator.clipboard.writeText(text);toast('Settlement copied')}}catch(e){if(e?.name!=='AbortError')toast('Could not share') }}
+async function shareResults(){const t=currentTrip(),tr=transfers(t);let text=`${t.name} — Eric's Expense Equalizer\nShare. Split. Simple.\n\nTotal: ${money(tripTotal(t))}\n\n`;text+=tr.length?tr.map(x=>`${personName(x.from)} pays ${personName(x.to)} ${money(x.amount)}`).join('\n'):'Everyone is already settled.';try{if(navigator.share)await navigator.share({title:`${t.name} settlement`,text});else{await navigator.clipboard.writeText(text);toast('Settlement copied')}}catch(e){if(e?.name!=='AbortError')toast('Could not share') }}
 
 // Events
 document.querySelectorAll('.nav-btn').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
 document.getElementById('tripMenuBtn').onclick=()=>switchTab('more');document.getElementById('tripNameBtn').onclick=()=>switchTab('more');
 document.getElementById('addPerson').onclick=()=>openPersonModal();document.getElementById('addPersonTop').onclick=()=>openPersonModal();document.getElementById('cancelPerson').onclick=closePersonModal;document.getElementById('savePerson').onclick=savePerson;document.getElementById('deletePerson').onclick=deletePerson;
 document.getElementById('openExpenseBtn').onclick=()=>openExpenseModal();document.getElementById('addExpenseBottom').onclick=()=>openExpenseModal();document.getElementById('cancelExpense').onclick=closeExpenseModal;document.getElementById('saveExpense').onclick=saveExpense;document.getElementById('deleteExpense').onclick=deleteExpense;document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{draftMode=b.dataset.mode;renderExpenseControls()});
-document.getElementById('newTrip').onclick=openTripModal;document.getElementById('renameTrip').onclick=renameCurrentTrip;document.getElementById('deleteTrip').onclick=deleteCurrentTrip;document.getElementById('cancelTrip').onclick=closeTripModal;document.getElementById('saveTrip').onclick=saveTrip;document.getElementById('shareSettlement Results').onclick=shareSettlement Results;
+document.getElementById('newTrip').onclick=openTripModal;document.getElementById('renameTrip').onclick=renameCurrentTrip;document.getElementById('deleteTrip').onclick=deleteCurrentTrip;document.getElementById('cancelTrip').onclick=closeTripModal;document.getElementById('saveTrip').onclick=saveTrip;document.getElementById('shareResults').onclick=shareResults;
 ['expenseModal','personModal','tripModal'].forEach(id=>document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id)e.target.classList.add('hidden')}));
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;document.getElementById('installBtn').classList.remove('hidden')});document.getElementById('installBtn').onclick=async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;document.getElementById('installBtn').classList.add('hidden')};
 
 const welcomeButton=document.getElementById('showSplash');
-if(welcomeButton) welcomeButton.onclick=()=>{window.location.href='./index.html?v=19';};
+if(welcomeButton) welcomeButton.onclick=()=>{window.location.href='./index.html?v=22';};
 
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
 render();

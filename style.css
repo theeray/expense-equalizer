@@ -611,3 +611,6 @@ body .app-page-shell,
 #appShell{
   display:block !important;
 }
+
+/* v2.2 onboarding copy */
+.empty-help{display:inline-block;margin-top:6px;color:var(--muted);font-size:13px;line-height:1.45}

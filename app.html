@@ -8,17 +8,17 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Expense Equalizer" />
   <meta name="description" content="Eric's Expense Equalizer — Share. Split. Simple." />
-  <link rel="manifest" href="./manifest.webmanifest?v=19" />
-  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=19" />
-  <link rel="icon" href="./favicon.png?v=19" />
-  <link rel="stylesheet" href="./style.css?v=19" />
+  <link rel="manifest" href="./manifest.webmanifest?v=22" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=22" />
+  <link rel="icon" href="./favicon.png?v=22" />
+  <link rel="stylesheet" href="./style.css?v=22" />
   <title>Eric's Expense Equalizer — App</title>
 </head>
 <body>
 <div id="appShell" class="app-shell app-page-shell">
     <header class="brand-header">
       <div class="brand-lockup">
-        <img src="./brand-icon.jpg?v=19" alt="Eric's Expense Equalizer icon" class="brand-icon" />
+        <img src="./brand-icon.jpg?v=22" alt="Eric's Expense Equalizer icon" class="brand-icon" />
         <div>
           <div class="eyebrow">ERIC'S</div>
           <h1>Expense <span>Equalizer</span></h1>
@@ -31,7 +31,7 @@
     <section id="tripBar" class="trip-bar">
       <div>
         <div class="trip-label">CURRENT TRIP</div>
-        <button id="tripNameBtn" class="trip-name-btn"><span id="tripName">My Trip</span> <span aria-hidden="true">⌄</span></button>
+        <button id="tripNameBtn" class="trip-name-btn"><span id="tripName">New Expense Group</span> <span aria-hidden="true">⌄</span></button>
       </div>
       <div class="trip-total"><span id="tripTotal">$0.00</span><small>total</small></div>
     </section>
@@ -106,7 +106,7 @@
   <div id="expenseModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="expenseModalTitle">
     <div class="modal-card">
       <div class="modal-head"><button id="cancelExpense" class="text-btn">Cancel</button><h2 id="expenseModalTitle">New Expense</h2><button id="saveExpense" class="text-btn accent">Save</button></div>
-      <div class="field"><label for="desc">What was it for?</label><input id="desc" placeholder="Dinner, groceries, boat fuel…" autocomplete="off" /></div>
+      <div class="field"><label for="desc">What was it for?</label><input id="desc" placeholder="Enter Expense Description" autocomplete="off" /></div>
       <div class="field"><label for="amount">Amount</label><input id="amount" inputmode="decimal" type="number" min="0" step="0.01" placeholder="0.00" /></div>
       <div class="field"><label for="payer">Paid by</label><select id="payer"></select></div>
       <div class="field"><label>Who shared this?</label><div id="participantChips" class="participant-list"></div></div>
@@ -125,7 +125,7 @@
   <div id="personModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="personModalTitle">
     <div class="modal-card small-modal">
       <div class="modal-head"><button id="cancelPerson" class="text-btn">Cancel</button><h2 id="personModalTitle">Person or Group</h2><button id="savePerson" class="text-btn accent">Save</button></div>
-      <div class="field"><label for="personName">Name or group</label><input id="personName" placeholder="Maggie & Dave" autocomplete="off" /></div>
+      <div class="field"><label for="personName">Name or group</label><input id="personName" placeholder="Enter Name(s) Here" autocomplete="off" /></div>
       <div class="field"><label for="personWeight">People represented</label><input id="personWeight" type="number" min="0.01" step="0.25" value="1" /></div>
       <div class="helper">Examples: one person = 1, a couple = 2, two adults and one half-share child = 2.5.</div>
       <button id="deletePerson" class="danger-btn full hidden">Remove person or group</button>
@@ -135,13 +135,13 @@
   <div id="tripModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="tripModalTitle">
     <div class="modal-card small-modal">
       <div class="modal-head"><button id="cancelTrip" class="text-btn">Cancel</button><h2 id="tripModalTitle">New Trip</h2><button id="saveTrip" class="text-btn accent">Save</button></div>
-      <div class="field"><label for="newTripName">Trip name</label><input id="newTripName" placeholder="Lake Cabin 2026" autocomplete="off" /></div>
+      <div class="field"><label for="newTripName">Trip name</label><input id="newTripName" placeholder="Enter Group Name" autocomplete="off" /></div>
       <label class="toggle-row"><input id="copyPeople" type="checkbox" /><span>Copy people from current trip</span></label>
     </div>
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="./app.js?v=19"></script>
+  <script src="./app.js?v=22"></script>
 </body>
 </html>
 

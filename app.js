@@ -1,4 +1,4 @@
-const STORAGE_KEY='eee-pwa-v2';
+const STORAGE_KEY='eee-pwa-v3';
 const blankTrip={id:'trip-initial',name:'My Trip',createdAt:Date.now(),people:[],expenses:[]};
 let state=loadState()||{currentTripId:'trip-initial',trips:[structuredClone(blankTrip)]};
 let editExpenseId=null,editPersonId=null,draftMode='weighted',selected=new Set(),deferredInstall=null;

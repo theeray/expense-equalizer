@@ -1,35 +1,48 @@
-# Eric's Expense Equalizer
+# Eric's Expense Equalizer — Phase 1 v1.3
 
 **Share. Split. Simple.**
 
-A private, mobile-first expense splitter for friends and family. It supports people or groups representing different numbers of people, equal group splits, weighted-by-people splits, and custom weights.
+This is the GitHub Pages-ready Phase 1 project.
 
-## Phase 1.1 changes
+## What changed in v1.3
 
-- New welcome/splash screen with Get Started button
-- Eric head branding and a darker forest-green palette
-- Single-person and two-person/group icons
-- No example people or expenses in the deployment build
-- Fresh local-storage key so the old demo data does not automatically reappear after this update
-- Updated app icons and PWA cache names to reduce stale-image issues on GitHub Pages
+- The visible Eric head/logo is embedded directly inside `index.html` as a data URI.
+  It does **not** depend on `brand-icon.png` loading from GitHub.
+- The lake, mountains, mist, and pine-tree splash artwork is also embedded directly
+  inside `index.html` as SVG.
+- The PWA/home-screen icon files remain normal root-level PNGs because browsers
+  require icon URLs in the web manifest.
+- There are no sample people or sample expenses.
+- Person/group cards use one-head and two-head icons.
+- The theme uses the darker forest green from the approved mockup.
+- A new service-worker cache namespace prevents the old build from persisting.
 
-## Publish with GitHub Pages
+## Upload to GitHub
 
-1. Create a normal public GitHub repository (for example `expense-equalizer`).
-2. Upload **the contents of this folder** to the repository root. `index.html` should be visible at the top level of the repository.
-3. In GitHub, open **Settings → Pages**.
-4. Under **Build and deployment**, choose **Deploy from a branch**.
-5. Choose **main** and **/(root)**, then Save.
-6. After GitHub publishes, open the Pages URL it provides.
+Upload every file in this folder directly to the ROOT of your repository:
 
-If replacing an older version, upload/replace all files in this package. Your browser may cache the prior service worker briefly; a hard refresh or reopening the page usually clears it. The new service worker uses a new cache version.
+- index.html
+- style.css
+- app.js
+- manifest.webmanifest
+- service-worker.js
+- brand-icon.png
+- icon-192.png
+- icon-512.png
+- apple-touch-icon.png
+- favicon.png
+- README.md
+- LICENSE
 
-## Privacy
+Do not upload the ZIP itself as the website.
 
-All trip data is stored in the browser on the current device. There is no account, server, analytics service, or shared database in Phase 1.
+GitHub Pages:
+Settings → Pages → Deploy from a branch → main → /(root)
 
+## Important after replacing an older PWA
 
-## Version 1.2 upload note
-This package intentionally keeps all web assets at the repository root. Upload every file in this folder to the root of your GitHub repository. There are no `icons` or `assets` folders to miss.
+First test the live URL in an Incognito/InPrivate browser window.
 
-After uploading, GitHub Pages may still show the previous PWA briefly because of browser/service-worker caching. Test in a private window first. If an installed home-screen copy is stale, remove it and add it again after the site updates.
+If you previously installed the old version to a phone home screen, remove the old
+installed app and add it again after v1.3 has published. PWAs cache icons and app
+shells very aggressively.

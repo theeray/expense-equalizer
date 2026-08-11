@@ -1,14 +1,42 @@
-const CACHE='eee-v1.2.0';
-const ASSETS=[
-  './','./index.html','./style.css','./app.js','./manifest.webmanifest',
-  './splash-background.svg','./brand-icon.png','./icon-192.png','./icon-512.png',
-  './apple-touch-icon.png','./favicon.png'
+const CACHE='erics-expense-equalizer-v1.3.0';
+const CORE=[
+  './',
+  './index.html',
+  './style.css?v=13',
+  './app.js?v=13',
+  './manifest.webmanifest?v=13',
+  './brand-icon.png',
+  './icon-192.png',
+  './icon-512.png',
+  './apple-touch-icon.png',
+  './favicon.png'
 ];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{
- if(e.request.method!=='GET')return;
- e.respondWith(fetch(e.request).then(r=>{
-   const copy=r.clone(); caches.open(CACHE).then(c=>c.put(e.request,copy)); return r;
- }).catch(()=>caches.match(e.request).then(hit=>hit||caches.match('./index.html'))));
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE)
+      .then(cache => cache.addAll(CORE))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  event.respondWith(
+    fetch(event.request)
+      .then(response => {
+        const clone = response.clone();
+        caches.open(CACHE).then(cache => cache.put(event.request, clone));
+        return response;
+      })
+      .catch(() => caches.match(event.request).then(hit => hit || caches.match('./index.html')))
+  );
 });

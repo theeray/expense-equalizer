@@ -614,3 +614,39 @@ body .app-page-shell,
 
 /* v2.2 onboarding copy */
 .empty-help{display:inline-block;margin-top:6px;color:var(--muted);font-size:13px;line-height:1.45}
+
+
+/* ============================================================
+   Phase 2.1 — Shared trip / Firebase UI
+   ============================================================ */
+
+.panel-title-row{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+.compact-copy{margin:.3rem 0 0}
+.sync-badge{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;
+  border:1px solid var(--line);border-radius:999px;padding:7px 10px;
+  font-size:12px;font-weight:800;color:var(--muted);background:#0b1511
+}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#6b756f}
+.sync-badge.synced .sync-dot{background:#8fb95b}
+.sync-badge.syncing .sync-dot{background:#d8b35c;animation:syncPulse 1s infinite}
+.sync-badge.offline .sync-dot{background:#9b8b69}
+.sync-badge.error .sync-dot{background:#d46f5d}
+@keyframes syncPulse{50%{opacity:.3}}
+
+.top-sync-status{
+  display:inline-block;margin-top:4px;font-size:10px;font-weight:800;
+  color:#86a66f;letter-spacing:.05em;text-transform:uppercase
+}
+
+.cloud-note{
+  margin:12px 0;padding:11px 12px;border:1px solid var(--line);border-radius:12px;
+  background:#0b1511;color:var(--muted);font-size:13px;line-height:1.4
+}
+.shared-trip-info{margin:12px 0}
+.shared-label{font-size:10px;font-weight:850;letter-spacing:.12em;color:#8fb95b;margin-bottom:6px}
+.share-link-display{
+  font-size:12px;line-height:1.4;overflow-wrap:anywhere;padding:10px 11px;
+  border-radius:10px;background:#07100c;border:1px solid var(--line);color:#dce3dc
+}
+.cloud-helper{margin-top:10px}

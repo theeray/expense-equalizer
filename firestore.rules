@@ -1,0 +1,17 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /trips/{tripId} {
+
+      allow get: if request.auth != null;
+
+      allow create, update: if request.auth != null
+        && request.resource.data.shareId == tripId
+        && request.resource.data.trip is map;
+
+      allow list, delete: if false;
+    }
+  }
+}

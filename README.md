@@ -1,14 +1,36 @@
-# Eric's Expense Equalizer — v2.2
+# Eric's Expense Equalizer — Phase 2.2 (v2.4)
 
-Built from v1.9, the last version confirmed to have fully working buttons.
+**Share. Split. Simple.**
 
-Changes:
-- New uploaded startup artwork.
-- Generic onboarding/placeholders only.
-- No suggested names or sample expenses.
-- Keeps the reliable two-page structure: index.html -> app.html.
-- Leaves all working button IDs and event wiring intact.
-- New cache version: v2.2.0.
+This is the first Firebase-enabled build.
 
-Upload every file in this folder to the root of the GitHub repository, replacing the current files.
-Make sure app.html is included.
+The completed Phase 1 structure is preserved:
+- `index.html` is the welcome/start screen.
+- `app.html` is the working expense-splitting app.
+- Existing local trips and localStorage continue to work.
+- Firebase is additive: a trip only becomes shared when the user chooses to create a shared link.
+
+## Firebase connection
+
+Project: `expense-equalizer`
+
+Services used:
+- Firebase Authentication — Anonymous sign-in
+- Cloud Firestore — shared trip storage + realtime listeners
+
+Services not used:
+- Firebase Hosting
+- Firebase Analytics
+- Cloud Functions
+
+## Phase 2.2 features
+
+- Create a private shared-trip link
+- Join a shared trip from the link
+- Realtime sync across phones
+- Local / Syncing / Synced / Offline status
+- Local-only trips still work
+- Keep a shared trip as a local-only copy
+- Firestore rules included
+
+The next Phase 2 step can add QR-code invitations once live link syncing is confirmed.

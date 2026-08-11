@@ -5,7 +5,12 @@ let editExpenseId=null,editPersonId=null,draftMode='weighted',selected=new Set()
 
 function uid(prefix){return prefix+Math.random().toString(36).slice(2,10)}
 function currentTrip(){return state.trips.find(t=>t.id===state.currentTripId)||state.trips[0]}
-function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+function saveState(options={}){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+  if(options.sync!==false){
+    window.dispatchEvent(new CustomEvent('eee:state-saved',{detail:{tripId:state.currentTripId}}));
+  }
+}
 function loadState(){try{let v=JSON.parse(localStorage.getItem(STORAGE_KEY));return v&&Array.isArray(v.trips)?v:null}catch{return null}}
 function money(n){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Math.round((Number(n)||0)*100)/100)}
 function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[c]))}
@@ -19,7 +24,7 @@ function peopleIcon(count=1){
   }
   return `<span class="avatar-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="9" r="6"/><path d="M5 28c.7-8.5 4.4-12.7 11-12.7S26.3 19.5 27 28H5Z"/></svg></span>`;
 }
-function showSplash(){window.location.href='./index.html?v=22';}
+function showSplash(){window.location.href='./index.html?v=23';}
 
 function shares(exp,t=currentTrip()){
   const ids=exp.selected.filter(id=>t.people.some(p=>p.id===id)); if(!ids.length)return {};
@@ -88,6 +93,54 @@ function deleteCurrentTrip(){if(state.trips.length<=1)return toast('Keep at leas
 function switchTab(id){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));window.scrollTo({top:0,behavior:'smooth'})}
 async function shareResults(){const t=currentTrip(),tr=transfers(t);let text=`${t.name} — Eric's Expense Equalizer\nShare. Split. Simple.\n\nTotal: ${money(tripTotal(t))}\n\n`;text+=tr.length?tr.map(x=>`${personName(x.from)} pays ${personName(x.to)} ${money(x.amount)}`).join('\n'):'Everyone is already settled.';try{if(navigator.share)await navigator.share({title:`${t.name} settlement`,text});else{await navigator.clipboard.writeText(text);toast('Settlement copied')}}catch(e){if(e?.name!=='AbortError')toast('Could not share') }}
 
+
+// Phase 2 bridge: exposes only the small surface the optional Firebase module needs.
+// The core app remains local-first and does not depend on Firebase to function.
+window.EEEBridge={
+  getState:()=>structuredClone(state),
+  getCurrentTrip:()=>structuredClone(currentTrip()),
+  getCurrentTripId:()=>state.currentTripId,
+  getTripByShareId:(shareId)=>{
+    const t=state.trips.find(x=>x.shareId===shareId);
+    return t?structuredClone(t):null;
+  },
+  attachShareId:(shareId)=>{
+    const t=currentTrip();
+    t.shareId=shareId;
+    t.shared=true;
+    saveState({sync:false});
+    render();
+    return structuredClone(t);
+  },
+  applyRemoteTrip:(remoteTrip,shareId)=>{
+    if(!remoteTrip||!Array.isArray(remoteTrip.people)||!Array.isArray(remoteTrip.expenses)) return false;
+    const incoming=structuredClone(remoteTrip);
+    incoming.shareId=shareId;
+    incoming.shared=true;
+    let idx=state.trips.findIndex(t=>t.shareId===shareId);
+    if(idx<0) idx=state.trips.findIndex(t=>t.id===incoming.id);
+    if(idx>=0){
+      state.trips[idx]=incoming;
+    }else{
+      state.trips.push(incoming);
+    }
+    state.currentTripId=incoming.id;
+    saveState({sync:false});
+    render();
+    window.dispatchEvent(new CustomEvent('eee:remote-trip-applied',{detail:{shareId}}));
+    return true;
+  },
+  removeShareFromCurrent:()=>{
+    const t=currentTrip();
+    delete t.shareId;
+    delete t.shared;
+    saveState({sync:false});
+    render();
+  },
+  render,
+  toast
+};
+
 // Events
 document.querySelectorAll('.nav-btn').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
 document.getElementById('tripMenuBtn').onclick=()=>switchTab('more');document.getElementById('tripNameBtn').onclick=()=>switchTab('more');
@@ -97,8 +150,16 @@ document.getElementById('newTrip').onclick=openTripModal;document.getElementById
 ['expenseModal','personModal','tripModal'].forEach(id=>document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id)e.target.classList.add('hidden')}));
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;document.getElementById('installBtn').classList.remove('hidden')});document.getElementById('installBtn').onclick=async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;document.getElementById('installBtn').classList.add('hidden')};
 
+
+const cloudShareBtn=document.getElementById('cloudShareBtn');
+const copyInviteBtn=document.getElementById('copyInviteBtn');
+const leaveSharedBtn=document.getElementById('leaveSharedBtn');
+if(cloudShareBtn) cloudShareBtn.onclick=()=>window.dispatchEvent(new CustomEvent('eee:create-share'));
+if(copyInviteBtn) copyInviteBtn.onclick=()=>window.dispatchEvent(new CustomEvent('eee:copy-share-link'));
+if(leaveSharedBtn) leaveSharedBtn.onclick=()=>window.dispatchEvent(new CustomEvent('eee:leave-share'));
+
 const welcomeButton=document.getElementById('showSplash');
-if(welcomeButton) welcomeButton.onclick=()=>{window.location.href='./index.html?v=22';};
+if(welcomeButton) welcomeButton.onclick=()=>{window.location.href='./index.html?v=23';};
 
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
 render();

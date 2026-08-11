@@ -3,22 +3,32 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#0b0f0d" />
+  <meta name="theme-color" content="#08110d" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Expense Equalizer" />
-  <meta name="description" content="A friendly expense splitter for families, friends, couples, and groups." />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-  <link rel="icon" href="icons/favicon.png" />
-  <link rel="stylesheet" href="style.css" />
+  <meta name="description" content="Eric's Expense Equalizer — Share. Split. Simple." />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon-v2.png" />
+  <link rel="icon" href="./icons/favicon-v2.png" />
+  <link rel="stylesheet" href="./style.css" />
   <title>Eric's Expense Equalizer</title>
 </head>
 <body>
-  <div class="app-shell">
+  <section id="splash" class="splash" aria-label="Eric's Expense Equalizer welcome screen">
+    <div class="splash-art" aria-hidden="true"></div>
+    <div class="splash-inner">
+      <img src="./icons/brand-icon-v2.png" alt="" class="splash-icon" />
+      <div class="splash-title">Eric's<br>Expense<br><span>Equalizer</span></div>
+      <div class="splash-tagline">Share. Split. Simple.</div>
+      <button id="startApp" class="splash-start">Get Started</button>
+    </div>
+  </section>
+
+  <div id="appShell" class="app-shell app-hidden">
     <header class="brand-header">
       <div class="brand-lockup">
-        <img src="icons/brand-icon.png" alt="Eric's Expense Equalizer icon" class="brand-icon" />
+        <img src="./icons/brand-icon-v2.png" alt="Eric's Expense Equalizer icon" class="brand-icon" />
         <div>
           <div class="eyebrow">ERIC'S</div>
           <h1>Expense <span>Equalizer</span></h1>
@@ -31,7 +41,7 @@
     <section id="tripBar" class="trip-bar">
       <div>
         <div class="trip-label">CURRENT TRIP</div>
-        <button id="tripNameBtn" class="trip-name-btn"><span id="tripName">Lake Cabin</span> <span aria-hidden="true">⌄</span></button>
+        <button id="tripNameBtn" class="trip-name-btn"><span id="tripName">My Trip</span> <span aria-hidden="true">⌄</span></button>
       </div>
       <div class="trip-total"><span id="tripTotal">$0.00</span><small>total</small></div>
     </section>
@@ -89,14 +99,14 @@
           <div class="panel-title">This app</div>
           <p class="section-copy">Everything is saved on this device. Nothing is uploaded anywhere unless you explicitly share the settlement text.</p>
           <button id="installBtn" class="secondary-btn full hidden">Install on this device</button>
-          <button id="restoreDemo" class="secondary-btn full">Restore example trip</button>
+          <button id="showSplash" class="secondary-btn full">Show welcome screen</button>
         </div>
         <div class="about">Eric's Expense Equalizer<br><span>Share. Split. Simple.</span></div>
       </section>
     </main>
 
     <nav class="bottom-nav" aria-label="Primary">
-      <button id="peopleTab" class="nav-btn active" data-tab="people"><span class="nav-icon">●●</span><span>People</span></button>
+      <button id="peopleTab" class="nav-btn active" data-tab="people"><span class="nav-icon single-head" aria-hidden="true"></span><span>People</span></button>
       <button id="expensesTab" class="nav-btn" data-tab="expenses"><span class="nav-icon">▤</span><span>Expenses</span></button>
       <button id="settleTab" class="nav-btn" data-tab="settle"><span class="nav-icon">⇄</span><span>Settle Up</span></button>
       <button id="moreTab" class="nav-btn" data-tab="more"><span class="nav-icon">•••</span><span>More</span></button>
@@ -106,7 +116,7 @@
   <div id="expenseModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="expenseModalTitle">
     <div class="modal-card">
       <div class="modal-head"><button id="cancelExpense" class="text-btn">Cancel</button><h2 id="expenseModalTitle">New Expense</h2><button id="saveExpense" class="text-btn accent">Save</button></div>
-      <div class="field"><label for="desc">What was it for?</label><input id="desc" placeholder="Dinner at the cabin" autocomplete="off" /></div>
+      <div class="field"><label for="desc">What was it for?</label><input id="desc" placeholder="Dinner, groceries, boat fuel…" autocomplete="off" /></div>
       <div class="field"><label for="amount">Amount</label><input id="amount" inputmode="decimal" type="number" min="0" step="0.01" placeholder="0.00" /></div>
       <div class="field"><label for="payer">Paid by</label><select id="payer"></select></div>
       <div class="field"><label>Who shared this?</label><div id="participantChips" class="participant-list"></div></div>
@@ -136,11 +146,11 @@
     <div class="modal-card small-modal">
       <div class="modal-head"><button id="cancelTrip" class="text-btn">Cancel</button><h2 id="tripModalTitle">New Trip</h2><button id="saveTrip" class="text-btn accent">Save</button></div>
       <div class="field"><label for="newTripName">Trip name</label><input id="newTripName" placeholder="Lake Cabin 2026" autocomplete="off" /></div>
-      <label class="toggle-row"><input id="copyPeople" type="checkbox" checked /><span>Copy people from current trip</span></label>
+      <label class="toggle-row"><input id="copyPeople" type="checkbox" /><span>Copy people from current trip</span></label>
     </div>
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="app.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>

@@ -2,54 +2,28 @@
 
 **Share. Split. Simple.**
 
-A mobile-first expense splitting app for friends, families, couples, and groups. It supports:
+A private, mobile-first expense splitter for friends and family. It supports people or groups representing different numbers of people, equal group splits, weighted-by-people splits, and custom weights.
 
-- Equal splits among selected groups
-- Splits weighted by the number of people represented
-- Custom weights/percentages
-- Multiple saved trips
-- Automatic settle-up payments
-- Shareable settlement summaries
-- Offline use after the first visit
-- Install-to-home-screen support
-- Local-only storage: no account, server, or database required
+## Phase 1.1 changes
 
-## Put it online with GitHub Pages
+- New welcome/splash screen with Get Started button
+- Eric head branding and a darker forest-green palette
+- Single-person and two-person/group icons
+- No example people or expenses in the deployment build
+- Fresh local-storage key so the old demo data does not automatically reappear after this update
+- Updated app icons and PWA cache names to reduce stale-image issues on GitHub Pages
 
-You only need a normal free GitHub account.
+## Publish with GitHub Pages
 
-1. Sign in to GitHub.
-2. Click **New repository**.
-3. Name it something like `expense-equalizer`.
-4. Choose **Public**. (GitHub Pages is simplest on a public repository with a free account.)
-5. Check **Add a README file** only if you want; it is fine either way.
-6. Create the repository.
-7. Click **Add file → Upload files**.
-8. Upload the *contents* of this project folder: `index.html`, `style.css`, `app.js`, `manifest.webmanifest`, `service-worker.js`, `README.md`, `LICENSE`, and the entire `icons` folder.
-9. Commit the files.
-10. Open **Settings → Pages**.
-11. Under **Build and deployment**, choose **Deploy from a branch**.
-12. Select branch **main** and folder **/(root)**, then click **Save**.
-13. GitHub will show your site address after deployment. It will usually be:
+1. Create a normal public GitHub repository (for example `expense-equalizer`).
+2. Upload **the contents of this folder** to the repository root. `index.html` should be visible at the top level of the repository.
+3. In GitHub, open **Settings → Pages**.
+4. Under **Build and deployment**, choose **Deploy from a branch**.
+5. Choose **main** and **/(root)**, then Save.
+6. After GitHub publishes, open the Pages URL it provides.
 
-   `https://YOUR-USERNAME.github.io/expense-equalizer/`
-
-Deployment commonly takes a minute or two after the first setup.
-
-## Updating the app later
-
-When you receive a new version from ChatGPT, upload the replacement files to the same repository and commit them. GitHub Pages republishes automatically.
-
-Because the app uses a service worker for offline use, a phone that has already installed an older version may briefly show cached files. Reloading the page (or closing and reopening the installed app) normally picks up the update.
-
-## Installing on a phone
-
-### iPhone / iPad
-Open the GitHub Pages URL in Safari → **Share** → **Add to Home Screen**.
-
-### Android
-Open the URL in Chrome. Chrome may offer **Install app**, or use the browser menu → **Add to Home screen / Install app**.
+If replacing an older version, upload/replace all files in this package. Your browser may cache the prior service worker briefly; a hard refresh or reopening the page usually clears it. The new service worker uses a new cache version.
 
 ## Privacy
 
-Trip data is stored in the browser's local storage on that device. It is not sent to GitHub or to Eric. The **Share results** button only shares/copies the final settlement text when the user chooses to do so.
+All trip data is stored in the browser on the current device. There is no account, server, analytics service, or shared database in Phase 1.

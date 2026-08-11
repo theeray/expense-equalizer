@@ -1,6 +1,6 @@
-const STORAGE_KEY='eee-pwa-v1';
-const demoTrip={id:'trip-demo',name:'Lake Cabin',createdAt:Date.now(),people:[{id:'p1',name:'Eric',people:1},{id:'p2',name:'Erika',people:1},{id:'p3',name:'Maggie & Dave',people:2},{id:'p4',name:'Anna & Joe',people:2}],expenses:[{id:'e1',description:'Dinner at the cabin',amount:400,payerId:'p2',mode:'weighted',selected:['p2','p3','p4'],weights:{}}]};
-let state=loadState()||{currentTripId:'trip-demo',trips:[structuredClone(demoTrip)]};
+const STORAGE_KEY='eee-pwa-v2';
+const blankTrip={id:'trip-initial',name:'My Trip',createdAt:Date.now(),people:[],expenses:[]};
+let state=loadState()||{currentTripId:'trip-initial',trips:[structuredClone(blankTrip)]};
 let editExpenseId=null,editPersonId=null,draftMode='weighted',selected=new Set(),deferredInstall=null;
 
 function uid(prefix){return prefix+Math.random().toString(36).slice(2,10)}
@@ -12,6 +12,15 @@ function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),1800)}
 function personName(id){return currentTrip().people.find(p=>p.id===id)?.name||'Unknown'}
 function tripTotal(t=currentTrip()){return t.expenses.reduce((s,e)=>s+(Number(e.amount)||0),0)}
+
+function peopleIcon(count=1){
+  if(Number(count)>1){
+    return `<span class="avatar-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="11" cy="10" r="5"/><circle cx="22" cy="11" r="4.5"/><path d="M2.5 27c.6-7.2 3.9-10.8 8.9-10.8 5.1 0 8.2 3.6 8.7 10.8H2.5Z"/><path d="M17.3 27c-.1-3.4-.9-6.1-2.6-8.1 1.8-1.6 4.1-2.4 6.8-2.4 4.5 0 7.2 3.5 7.8 10.5h-12Z"/></svg></span>`;
+  }
+  return `<span class="avatar-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="9" r="6"/><path d="M5 28c.7-8.5 4.4-12.7 11-12.7S26.3 19.5 27 28H5Z"/></svg></span>`;
+}
+function hideSplash(){document.getElementById('splash').classList.add('hidden');document.getElementById('appShell').classList.remove('app-hidden');window.scrollTo(0,0)}
+function showSplash(){document.getElementById('appShell').classList.add('app-hidden');document.getElementById('splash').classList.remove('hidden');window.scrollTo(0,0)}
 
 function shares(exp,t=currentTrip()){
   const ids=exp.selected.filter(id=>t.people.some(p=>p.id===id)); if(!ids.length)return {};
@@ -42,7 +51,7 @@ function render(){const t=currentTrip();if(!t)return;
 }
 function renderPeople(){const t=currentTrip(),el=document.getElementById('peopleList');
   if(!t.people.length){el.innerHTML='<div class="empty-card">No people yet.</div>';return}
-  el.innerHTML=t.people.map(p=>`<button class="person-card" data-person="${p.id}"><div class="person-main"><div class="avatar">${esc((p.name||'?').trim().slice(0,1).toUpperCase())}</div><div><div class="card-title">${esc(p.name||'Unnamed')}</div><div class="card-sub">${p.people} ${p.people===1?'person':'people'}</div></div></div><span class="chev">›</span></button>`).join('');
+  el.innerHTML=t.people.map(p=>`<button class="person-card" data-person="${p.id}"><div class="person-main">${peopleIcon(p.people)}<div><div class="card-title">${esc(p.name||'Unnamed')}</div><div class="card-sub">${p.people} ${p.people===1?'person':'people'}</div></div></div><span class="chev">›</span></button>`).join('');
   el.querySelectorAll('[data-person]').forEach(b=>b.onclick=()=>openPersonModal(b.dataset.person));
 }
 function renderExpenses(){const t=currentTrip(),list=document.getElementById('expenseList'),total=tripTotal(t);document.getElementById('expenseTotal').textContent=money(total);document.getElementById('expenseCount').textContent=t.expenses.length;
@@ -56,7 +65,7 @@ function renderSettle(){const t=currentTrip(),tr=transfers(t),b=balances(t);docu
 }
 function renderTrips(){const el=document.getElementById('tripList');el.innerHTML=state.trips.map(t=>`<button class="trip-card" data-trip="${t.id}"><div class="trip-main"><div class="avatar">${t.id===state.currentTripId?'✓':'$'}</div><div><div class="card-title">${esc(t.name)}</div><div class="card-sub">${t.expenses.length} expenses · ${money(tripTotal(t))}</div></div></div><span class="chev">›</span></button>`).join('');el.querySelectorAll('[data-trip]').forEach(b=>b.onclick=()=>{state.currentTripId=b.dataset.trip;saveState();render();switchTab('people');toast('Trip opened')})}
 
-function openExpenseModal(id=null){const t=currentTrip();editExpenseId=id;const e=id?t.expenses.find(x=>x.id===id):null;draftMode=e?.mode||'weighted';selected=new Set(e?.selected||t.people.map(p=>p.id));document.getElementById('expenseModalTitle').textContent=e?'Edit Expense':'New Expense';document.getElementById('desc').value=e?.description||'';document.getElementById('amount').value=e?.amount??'';document.getElementById('deleteExpense').classList.toggle('hidden',!e);document.getElementById('expenseModal').classList.remove('hidden');renderExpenseControls();if(e){document.getElementById('payer').value=e.payerId;if(e.mode==='custom')requestAnimationFrame(()=>document.querySelectorAll('[data-custom]').forEach(i=>i.value=e.weights?.[i.dataset.custom]??1))}}
+function openExpenseModal(id=null){const t=currentTrip();if(!t.people.length){switchTab('people');toast('Add a person or group first');return}editExpenseId=id;const e=id?t.expenses.find(x=>x.id===id):null;draftMode=e?.mode||'weighted';selected=new Set(e?.selected||t.people.map(p=>p.id));document.getElementById('expenseModalTitle').textContent=e?'Edit Expense':'New Expense';document.getElementById('desc').value=e?.description||'';document.getElementById('amount').value=e?.amount??'';document.getElementById('deleteExpense').classList.toggle('hidden',!e);document.getElementById('expenseModal').classList.remove('hidden');renderExpenseControls();if(e){document.getElementById('payer').value=e.payerId;if(e.mode==='custom')requestAnimationFrame(()=>document.querySelectorAll('[data-custom]').forEach(i=>i.value=e.weights?.[i.dataset.custom]??1))}}
 function closeExpenseModal(){document.getElementById('expenseModal').classList.add('hidden')}
 function renderExpenseControls(){const t=currentTrip(),payer=document.getElementById('payer');const old=payer.value;payer.innerHTML=t.people.map(p=>`<option value="${p.id}">${esc(p.name||'Unnamed')}</option>`).join('');if(t.people.some(p=>p.id===old))payer.value=old;
   const el=document.getElementById('participantChips');el.innerHTML=t.people.map(p=>`<button type="button" class="participant ${selected.has(p.id)?'on':''}" data-chip="${p.id}"><span>${esc(p.name||'Unnamed')} <small>· ${p.people}</small></span><span class="check">✓</span></button>`).join('');el.querySelectorAll('[data-chip]').forEach(b=>b.onclick=()=>{selected.has(b.dataset.chip)?selected.delete(b.dataset.chip):selected.add(b.dataset.chip);renderExpenseControls()});
@@ -69,12 +78,11 @@ function deleteExpense(){if(!editExpenseId)return;currentTrip().expenses=current
 function openPersonModal(id=null){const p=id?currentTrip().people.find(x=>x.id===id):null;editPersonId=id;document.getElementById('personModalTitle').textContent=p?'Edit Person or Group':'Add Person or Group';document.getElementById('personName').value=p?.name||'';document.getElementById('personWeight').value=p?.people??1;document.getElementById('deletePerson').classList.toggle('hidden',!p);document.getElementById('personModal').classList.remove('hidden');setTimeout(()=>document.getElementById('personName').focus(),80)}
 function closePersonModal(){document.getElementById('personModal').classList.add('hidden')}
 function savePerson(){const t=currentTrip(),name=document.getElementById('personName').value.trim(),people=Math.max(.01,Number(document.getElementById('personWeight').value)||1);if(!name)return toast('Add a name');if(editPersonId)t.people=t.people.map(p=>p.id===editPersonId?{...p,name,people}:p);else t.people.push({id:uid('p'),name,people});saveState();closePersonModal();render();toast(editPersonId?'Updated':'Person added')}
-function deletePerson(){const t=currentTrip();if(!editPersonId)return;if(t.people.length<=1)return toast('Keep at least one person');if(t.expenses.some(e=>e.payerId===editPersonId||e.selected.includes(editPersonId)))return toast('Remove their expenses first');t.people=t.people.filter(p=>p.id!==editPersonId);saveState();closePersonModal();render();toast('Removed')}
+function deletePerson(){const t=currentTrip();if(!editPersonId)return;if(t.expenses.some(e=>e.payerId===editPersonId||e.selected.includes(editPersonId)))return toast('Remove their expenses first');t.people=t.people.filter(p=>p.id!==editPersonId);saveState();closePersonModal();render();toast('Removed')}
 
 function openTripModal(){document.getElementById('newTripName').value='';document.getElementById('copyPeople').checked=true;document.getElementById('tripModal').classList.remove('hidden');setTimeout(()=>document.getElementById('newTripName').focus(),80)}
 function closeTripModal(){document.getElementById('tripModal').classList.add('hidden')}
-function saveTrip(){const name=document.getElementById('newTripName').value.trim();if(!name)return toast('Name the trip');const src=currentTrip(),copy=document.getElementById('copyPeople').checked;const t={id:uid('trip'),name,createdAt:Date.now(),people:copy?src.people.map(p=>({...p,id:uid('p')})):[{id:uid('p'),name:'Eric',people:1}],expenses:[]};state.trips.push(t);state.currentTripId=t.id;saveState();closeTripModal();render();switchTab('people');toast('New trip created')}
-function restoreDemo(){const existing=state.trips.findIndex(t=>t.id==='trip-demo');if(existing>=0)state.trips[existing]=structuredClone(demoTrip);else state.trips.unshift(structuredClone(demoTrip));state.currentTripId='trip-demo';saveState();render();switchTab('people');toast('Example restored')}
+function saveTrip(){const name=document.getElementById('newTripName').value.trim();if(!name)return toast('Name the trip');const src=currentTrip(),copy=document.getElementById('copyPeople').checked;const t={id:uid('trip'),name,createdAt:Date.now(),people:copy?src.people.map(p=>({...p,id:uid('p')})):[],expenses:[]};state.trips.push(t);state.currentTripId=t.id;saveState();closeTripModal();render();switchTab('people');toast('New trip created')}
 function renameCurrentTrip(){const t=currentTrip();const name=prompt('Rename trip:',t.name);if(name&&name.trim()){t.name=name.trim();saveState();render();toast('Trip renamed')}}
 function deleteCurrentTrip(){if(state.trips.length<=1)return toast('Keep at least one trip');const t=currentTrip();if(!confirm(`Delete \"${t.name}\" and all of its expenses?`))return;state.trips=state.trips.filter(x=>x.id!==t.id);state.currentTripId=state.trips[0].id;saveState();render();switchTab('people');toast('Trip deleted')}
 
@@ -86,8 +94,9 @@ document.querySelectorAll('.nav-btn').forEach(b=>b.onclick=()=>switchTab(b.datas
 document.getElementById('tripMenuBtn').onclick=()=>switchTab('more');document.getElementById('tripNameBtn').onclick=()=>switchTab('more');
 document.getElementById('addPerson').onclick=()=>openPersonModal();document.getElementById('addPersonTop').onclick=()=>openPersonModal();document.getElementById('cancelPerson').onclick=closePersonModal;document.getElementById('savePerson').onclick=savePerson;document.getElementById('deletePerson').onclick=deletePerson;
 document.getElementById('openExpenseBtn').onclick=()=>openExpenseModal();document.getElementById('addExpenseBottom').onclick=()=>openExpenseModal();document.getElementById('cancelExpense').onclick=closeExpenseModal;document.getElementById('saveExpense').onclick=saveExpense;document.getElementById('deleteExpense').onclick=deleteExpense;document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{draftMode=b.dataset.mode;renderExpenseControls()});
-document.getElementById('newTrip').onclick=openTripModal;document.getElementById('renameTrip').onclick=renameCurrentTrip;document.getElementById('deleteTrip').onclick=deleteCurrentTrip;document.getElementById('cancelTrip').onclick=closeTripModal;document.getElementById('saveTrip').onclick=saveTrip;document.getElementById('restoreDemo').onclick=restoreDemo;document.getElementById('shareResults').onclick=shareResults;
+document.getElementById('newTrip').onclick=openTripModal;document.getElementById('renameTrip').onclick=renameCurrentTrip;document.getElementById('deleteTrip').onclick=deleteCurrentTrip;document.getElementById('cancelTrip').onclick=closeTripModal;document.getElementById('saveTrip').onclick=saveTrip;document.getElementById('shareResults').onclick=shareResults;
 ['expenseModal','personModal','tripModal'].forEach(id=>document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id)e.target.classList.add('hidden')}));
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;document.getElementById('installBtn').classList.remove('hidden')});document.getElementById('installBtn').onclick=async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;document.getElementById('installBtn').classList.add('hidden')};
+document.getElementById('startApp').onclick=hideSplash;document.getElementById('showSplash').onclick=showSplash;
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
 render();

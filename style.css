@@ -301,3 +301,125 @@ html,body{background:#050d09}
     transform:translateX(-50%);
   }
 }
+
+
+/* ============================================================
+   v1.5 — exact user-supplied splash + clean icon
+   ============================================================ */
+
+.splash.splash-photo{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:120 !important;
+  overflow:hidden !important;
+  background:#020806 !important;
+  display:block !important;
+}
+
+/* No gradient, fade, shade, or vector overlay on the splash. */
+.splash.splash-photo::before,
+.splash.splash-photo::after,
+.splash-shade,
+.splash-scenery{
+  display:none !important;
+  content:none !important;
+  background:none !important;
+  opacity:0 !important;
+}
+
+.splash-picture{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  display:block !important;
+}
+
+.splash-photo-img{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  display:block !important;
+  object-fit:cover !important;
+  object-position:center center !important;
+  background:#020806 !important;
+  filter:none !important;
+  opacity:1 !important;
+  mix-blend-mode:normal !important;
+}
+
+/* The visible button is already part of the supplied artwork.
+   This invisible button is the tap target only. */
+.splash-hit-button{
+  position:absolute !important;
+  z-index:4 !important;
+  left:7.25% !important;
+  right:7.25% !important;
+  bottom:max(6.15%, calc(env(safe-area-inset-bottom) + 14px)) !important;
+  height:8.25% !important;
+  min-height:54px !important;
+  border:0 !important;
+  border-radius:18px !important;
+  background:transparent !important;
+  color:transparent !important;
+  font-size:0 !important;
+  box-shadow:none !important;
+  cursor:pointer !important;
+  -webkit-tap-highlight-color:transparent !important;
+}
+
+.splash-hit-button:focus-visible{
+  outline:3px solid rgba(151,194,87,.95) !important;
+  outline-offset:4px !important;
+}
+
+/* Use the supplied black-corner-free icon in the upper-left app header.
+   Rounded corners are done by CSS, not baked into the image. */
+.brand-icon{
+  width:56px !important;
+  height:56px !important;
+  object-fit:cover !important;
+  object-position:center !important;
+  background:#020806 !important;
+  border-radius:14px !important;
+  border:1px solid rgba(122,160,78,.30) !important;
+  box-shadow:none !important;
+  overflow:hidden !important;
+}
+
+/* Preserve the darker forest-green UI direction. */
+:root{
+  --green:#6e9248 !important;
+  --green2:#91b95b !important;
+}
+
+/* Keep the uploaded composition centered on narrow/tall phone screens. */
+@media (max-width:650px){
+  .splash-photo-img{
+    object-fit:cover !important;
+    object-position:center center !important;
+  }
+}
+
+/* On desktop/tablet, preserve the portrait artwork proportions and center it. */
+@media (min-width:651px){
+  .splash.splash-photo{
+    background:#020806 !important;
+  }
+  .splash-picture{
+    left:50% !important;
+    transform:translateX(-50%) !important;
+    width:min(100vw, 540px) !important;
+    right:auto !important;
+  }
+  .splash-photo-img{
+    object-fit:cover !important;
+  }
+  .splash-hit-button{
+    left:50% !important;
+    right:auto !important;
+    width:min(465px,86vw) !important;
+    transform:translateX(-50%) !important;
+  }
+}

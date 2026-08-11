@@ -27,3 +27,21 @@ GitHub Pages:
 Settings → Pages → Deploy from a branch → main → /(root)
 
 Test the live site in an Incognito/InPrivate window first.
+
+
+## v2.0
+- Removed remaining example names.
+- Placeholder/example group names now use instructional text such as:
+  - Enter Name(s) Here
+  - Enter Name Here
+  - Enter Expense Description
+  - New Expense Group
+
+
+## v2.1 Onboarding polish
+- Removed remaining sample/demo names and expenses.
+- Replaced example content with instructional onboarding language.
+- Empty states now encourage users to:
+  * Add their first person or group
+  * Add their first expense
+  * View settlement results after entering expenses

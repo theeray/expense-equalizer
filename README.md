@@ -1,48 +1,27 @@
-# Eric's Expense Equalizer — Phase 1 v1.3
+# Eric's Expense Equalizer — Phase 1 v1.4
 
 **Share. Split. Simple.**
 
-This is the GitHub Pages-ready Phase 1 project.
+This build uses the user's approved splash artwork directly. It no longer redraws the
+lake, mountains, trees, typography, or head artwork with simplified SVG/CSS geometry.
 
-## What changed in v1.3
+## Visual changes in v1.4
 
-- The visible Eric head/logo is embedded directly inside `index.html` as a data URI.
-  It does **not** depend on `brand-icon.png` loading from GitHub.
-- The lake, mountains, mist, and pine-tree splash artwork is also embedded directly
-  inside `index.html` as SVG.
-- The PWA/home-screen icon files remain normal root-level PNGs because browsers
-  require icon URLs in the web manifest.
-- There are no sample people or sample expenses.
-- Person/group cards use one-head and two-head icons.
-- The theme uses the darker forest green from the approved mockup.
-- A new service-worker cache namespace prevents the old build from persisting.
+- The approved `Eric's Expense Equalizer copy.png` artwork is used directly as the splash.
+- A 2× display copy is included for high-DPI phone screens.
+- The visible "Get Started" button is part of the approved artwork; the app places an
+  invisible accessible tap target directly over it.
+- App/home-screen icons are rebuilt on a solid dark background so there are no white corner artifacts.
+- Darker forest green is retained throughout the working UI.
+- No example people or example expenses are included.
 
-## Upload to GitHub
+## GitHub upload
 
-Upload every file in this folder directly to the ROOT of your repository:
+Replace your current repository root files with every file from this project folder.
+Keep all files at the repository root.
 
-- index.html
-- style.css
-- app.js
-- manifest.webmanifest
-- service-worker.js
-- brand-icon.png
-- icon-192.png
-- icon-512.png
-- apple-touch-icon.png
-- favicon.png
-- README.md
-- LICENSE
-
-Do not upload the ZIP itself as the website.
-
-GitHub Pages:
+Then use:
 Settings → Pages → Deploy from a branch → main → /(root)
 
-## Important after replacing an older PWA
-
-First test the live URL in an Incognito/InPrivate browser window.
-
-If you previously installed the old version to a phone home screen, remove the old
-installed app and add it again after v1.3 has published. PWAs cache icons and app
-shells very aggressively.
+After publishing, test in an Incognito/InPrivate window. If the older installed PWA
+still appears on a phone, remove it from the home screen and add the new version again.

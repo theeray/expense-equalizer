@@ -186,3 +186,118 @@ html,body{background:#050d09}
   .splash-tagline{font-size:18px;margin:18px 0 26px}
   .splash-start{max-width:none}
 }
+
+
+/* ============================================================
+   v1.4 — exact preferred splash artwork
+   The splash uses the user's approved PNG directly rather than
+   re-drawing the lake/trees as vector geometry.
+   ============================================================ */
+
+.splash.splash-photo{
+  position:fixed;
+  inset:0;
+  z-index:120;
+  overflow:hidden;
+  background:#020806;
+  display:block;
+}
+
+.splash-picture{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+.splash-photo-img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center center;
+  display:block;
+  background:#020806;
+}
+
+/* The approved artwork already contains the visible Get Started button.
+   This button is an invisible accessible hit target over the printed button. */
+.splash-hit-button{
+  position:absolute;
+  z-index:4;
+  left:7%;
+  right:7%;
+  bottom:max(6.3%, calc(env(safe-area-inset-bottom) + 18px));
+  height:8.1%;
+  min-height:54px;
+  border:0;
+  border-radius:18px;
+  background:transparent;
+  color:transparent;
+  font-size:0;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.splash-hit-button:focus-visible{
+  outline:3px solid rgba(151,194,87,.9);
+  outline-offset:4px;
+}
+
+/* Clean full-square icon in the application header. */
+.brand-icon{
+  object-fit:cover !important;
+  background:#030a07 !important;
+  border:1px solid rgba(123,158,76,.28) !important;
+  border-radius:14px !important;
+}
+
+/* Keep the slightly darker approved green throughout the app. */
+:root{
+  --green:#6f9347;
+  --green2:#8fb95b;
+}
+.round-add,
+.primary-btn{
+  background:linear-gradient(135deg,#5b7f3e,#82aa54) !important;
+}
+.nav-btn.active,
+.metric-card strong,
+.trip-total span,
+.transfer-amount,
+.balance-pos{
+  color:#8fb95b !important;
+}
+
+/* Avoid the splash image being over-cropped on very tall/narrow phones. */
+@media (max-aspect-ratio: 9/18.5){
+  .splash-photo-img{
+    object-fit:cover;
+    object-position:center top;
+  }
+  .splash-hit-button{
+    bottom:max(5.7%, calc(env(safe-area-inset-bottom) + 16px));
+  }
+}
+
+/* On tablets/desktop, preserve the portrait poster proportions instead of stretching it. */
+@media (min-width: 650px){
+  .splash.splash-photo{
+    background:#020806;
+  }
+  .splash-picture{
+    left:50%;
+    transform:translateX(-50%);
+    width:min(100vw, 540px);
+  }
+  .splash-photo-img{
+    object-fit:cover;
+  }
+  .splash-hit-button{
+    left:50%;
+    right:auto;
+    width:min(465px,86vw);
+    transform:translateX(-50%);
+  }
+}
